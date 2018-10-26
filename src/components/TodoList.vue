@@ -86,9 +86,9 @@ ul {
   font-style: italic;
 }
 li {
-  display: inline-block;
+  display: flex;
   width: 70%;
-  margin: 0 10px;
+  margin: 0 auto;
 }
 a {
   color: #42b983;
