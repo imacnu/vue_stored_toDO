@@ -19,12 +19,15 @@
 
 <style scoped>
   .item {
-    width: 10rem;
     display: flex;
     justify-content: space-between;
+    width: 100%;
   }
   button {
+    background: none;
+    border: none;
     font-size: 1rem;
+    outline: none;
     color: tomato;
   }
 

@@ -87,6 +87,7 @@ ul {
 }
 li {
   display: inline-block;
+  width: 70%;
   margin: 0 10px;
 }
 a {
