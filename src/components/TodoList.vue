@@ -37,9 +37,13 @@
 import TodoForm from '@/components/TodoForm';
 import TodoListItem from '@/components/TodoListItem';
 
+const TODOS_STORE = 'todos-store';
+const COMPLETED_TODOS_STORE = 'completed-todos-store';
+
 export default {
   components: {TodoListItem, TodoForm},
   name: 'TodoList',
+
   data () {
     return {
       title: 'Todo List App',
@@ -47,16 +51,30 @@ export default {
       completedTodos: [],
     }
   },
+
+  created() {
+    this.todos = JSON.parse(localStorage.getItem(TODOS_STORE) || []);
+    this.completedTodos = JSON.parse(localStorage.getItem(COMPLETED_TODOS_STORE) || []);
+  },
+
   methods: {
     addTodo(todo) {
       this.todos.push({id: this.todos.length, name: todo, completed: false});
+      this._updateStore(TODOS_STORE, this.todos);
     },
     removeTodo(todo) {
       this._remove(this.todos, todo);
+      this._updateStore(TODOS_STORE, this.todos);
+
       this.completedTodos.push({id: todo.id, name: todo.name, completed: true});
+      this._updateStore(COMPLETED_TODOS_STORE, this.completedTodos);
     },
     removeCompletedTodo(todo) {
       this._remove(this.completedTodos, todo);
+      this._updateStore(COMPLETED_TODOS_STORE, this.completedTodos);
+    },
+    _updateStore(storeKey, collection) {
+      localStorage.setItem(storeKey, JSON.stringify(collection));
     },
     _remove(collection, element) {
       collection.splice(collection.indexOf(element) , 1);
