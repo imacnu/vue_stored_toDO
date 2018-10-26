@@ -106,13 +106,11 @@ export default {
       if (!this.editedTodo) {
         return
       }
+      this._remove(this.todos, todo);
       if (todo.name) {
-        this._remove(this.todos, todo);
         this.todos.push(todo);
-        this._updateStore(TODOS_STORE, this.todos);
-      } else {
-        this._remove(this.todos, todo);
       }
+      this._updateStore(TODOS_STORE, this.todos);
       this.editedTodo = null
       this.editing = false;
     },
