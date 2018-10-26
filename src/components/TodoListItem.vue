@@ -1,7 +1,7 @@
 <template>
   <div class="item">
-    <p>{{todo.name | capitalize}}</p>
-    <button @click="removeTodo"> &#x2715; </button>
+    <p @dblclick="editTodo(todo)" @blur="editedTodo(todo)">{{todo.name | capitalize}}</p>
+    <button @click="removeTodo(todo)"> &#x2715; </button>
   </div>
 </template>
 
@@ -11,6 +11,9 @@
     methods: {
       removeTodo() {
         this.$emit('remove-todo', this.todo);
+      },
+      editTodo(todo) {
+        this.$emit('edit-todo', this.todo);
       }
     },
     filters: {

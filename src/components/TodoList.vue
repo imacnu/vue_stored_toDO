@@ -9,9 +9,18 @@
           <transition-group name="list">
             <li v-for="(todo, index) in todos" :key="index">
               <todo-list-item
+                v-if="!editing"
                 :todo="todo"
                 v-on:remove-todo="removeTodo"
+                v-on:edit-todo="editTodo"
               ></todo-list-item>
+              <input class="edit" type="text"
+                v-if="editing"
+                v-model="todo.name"
+                @focus="editTodo(todo)"
+                @blur="doneEdit(todo)"
+                @keyup.enter="doneEdit(todo)"
+                @keyup.esc="cancelEditTodo(todo)">
             </li>
           </transition-group>
         </ul>
@@ -49,6 +58,9 @@ export default {
       title: 'Todo List App',
       todos: [],
       completedTodos: [],
+      editedTodo: false,
+      beforeEditCache: '',
+      editing: false
     }
   },
 
@@ -58,10 +70,12 @@ export default {
   },
 
   methods: {
+
     addTodo(todo) {
       this.todos.push({id: this.todos.length, name: todo, completed: false});
       this._updateStore(TODOS_STORE, this.todos);
     },
+
     removeTodo(todo) {
       this._remove(this.todos, todo);
       this._updateStore(TODOS_STORE, this.todos);
@@ -69,15 +83,44 @@ export default {
       this.completedTodos.push({id: todo.id, name: todo.name, completed: true});
       this._updateStore(COMPLETED_TODOS_STORE, this.completedTodos);
     },
+
     removeCompletedTodo(todo) {
       this._remove(this.completedTodos, todo);
       this._updateStore(COMPLETED_TODOS_STORE, this.completedTodos);
     },
+
     _updateStore(storeKey, collection) {
       localStorage.setItem(storeKey, JSON.stringify(collection));
     },
     _remove(collection, element) {
       collection.splice(collection.indexOf(element) , 1);
+    },
+
+    editTodo(todo) {
+      this.beforeEditCache = todo.name;
+      this.editedTodo = todo;
+      this.editing = true;
+    },
+
+    doneEdit: function (todo) {
+      if (!this.editedTodo) {
+        return
+      }
+      if (todo.name) {
+        this._remove(this.todos, todo);
+        this.todos.push(todo);
+        this._updateStore(TODOS_STORE, this.todos);
+      } else {
+        this._remove(this.todos, todo);
+      }
+      this.editedTodo = null
+      this.editing = false;
+    },
+
+    cancelEditTodo(todo) {
+      this.editedTodo = null
+      todo.name = this.beforeEditCache;
+      this.editing = false;
     }
   }
 }
@@ -120,5 +163,20 @@ a {
 .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
   opacity: 0;
   transform: translateY(30px);
+}
+.edit {
+  display: block;
+  border: none;
+  border-bottom: 1px solid  #2c3e50;
+  outline: none;
+  text-align: left;
+  font-size: 1rem;
+  color: #2c3e50;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  opacity: .7;
+  font-style: italic;
 }
 </style>
