@@ -1,6 +1,6 @@
 <template>
   <div class="item">
-    <p>{{todo.name}}</p>
+    <p>{{todo.name | capitalize}}</p>
     <button @click="removeTodo"> &#x2715; </button>
   </div>
 </template>
@@ -13,7 +13,12 @@
         this.$emit('remove-todo', this.todo);
       }
     },
-
+    filters: {
+      capitalize(name) {
+        let _name = name.toLowerCase();
+        return _name.charAt(0).toUpperCase() + _name.slice(1)
+      }
+    }
   }
 </script>
 
